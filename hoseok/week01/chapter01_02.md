@@ -43,7 +43,8 @@ Java 8은 메서드 참조, 람다와 인터페이스의 디폴트 메서드를 
     - JDK7에는 invokedynamic 바이트코드가 추가됨
         - 런타임에 동적으로 호출할 메서드를 결정하기 위해 사용 내부적으로 Bootstrap Method의 호출 결과로 Call Site라는 객체를 반환합니다. Call Site는 Method Handle을 담아두는 홀더 역할을 하며 invokedynamic 명령이 호출되는 지점을 의미합니다. JVM에 의해 관리됩니다.
             
-            ![스크린샷 2023-07-11 오전 2.08.29.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/40c48e4e-1fb6-44f8-85b0-f6b16e8db2f1/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2023-07-11_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_2.08.29.png)
+            ![image](https://github.com/Invincible-Backend-Study/modern-java-in-action/assets/66772624/a2cf378f-19dd-472a-a4f9-b5d5f8e00f8e)
+
             
 - 자바가 대중적인 프로그래밍 언어가 될 수 있었던 이유
     - 객체지향 언어로 모든 것은 객체다 라는 개념을 통해 어떤 모델이든 쉽게 대응할 수 있었음
