@@ -7,7 +7,6 @@ import java.util.stream.IntStream;
 public class MethodReference{
     public static void main(String...args){
         var list = IntStream.range(1,10).mapToObj(String::valueOf).collect(Collectors.toList());
-
         list.stream().map(i -> {
             System.out.println("=" + i);
             return i;
