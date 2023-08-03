@@ -21,6 +21,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntBinaryOperator;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
@@ -115,6 +116,7 @@ public class Example {
                         List::add, // 누적
                         List::addAll // 합계
                 );
+
     }
 
     static boolean isPrime(List<Integer> primes, int candidate){
