@@ -1,9 +1,7 @@
 package org.example.chapter7;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -20,7 +18,6 @@ public class ParallelStreamBenchmark {
 
     @Benchmark
     public long sequentialSum() {
-        List.of()
         return Stream.iterate(1L, i -> i + 1)
                 .limit(N)
                 .reduce(0L, Long::sum);
