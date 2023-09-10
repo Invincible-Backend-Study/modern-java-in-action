@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+    id "me.champeau.jmh" version "0.7.1"
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+sourceCompatibility 11
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.openjdk.jmh:jmh-core:0.9"
+    implementation 'org.projectlombok:lombok:1.18.26'
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,0 +1,7 @@
+**/.gitignore
+**/.gradle
+**/out
+**/build
+.idea
+
+**/mod
