@@ -7,6 +7,8 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -27,7 +29,7 @@ public class Chapter16PipelinePlayGround {
                 .map(Discount::applyDiscount)
                 .collect(Collectors.toList());
 
-        printRunSpeed(() -> findPrices.apply("any"), "테스트");
+        //printRunSpeed(() -> findPrices.apply("any"), "테스트");
 
         final var executor = Executors.newFixedThreadPool(10);
         Function<String, List<CompletableFuture<String>>> findPricesByCombineAsyncAndSync = (product) -> shops.stream()
@@ -45,6 +47,62 @@ public class Chapter16PipelinePlayGround {
                 "비동기 동기를 조합한 검색"
         );
         // end::.[]
+
+        Consumer<Integer> delayTimeOut = i -> {
+            try {
+                Thread.sleep(i);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        };
+
+        // 랜덤한 숫자를 받아오는데 1초가 걸림
+        Supplier<Integer> getRandomNumber = () -> {
+            delayTimeOut.accept(1000);
+            return new Random().nextInt();
+        };
+
+        printRunSpeed(() ->
+                CompletableFuture.supplyAsync(getRandomNumber)
+                        .thenCompose((i) -> CompletableFuture.supplyAsync(getRandomNumber)
+                                .thenApply(i1 -> i1 + i)
+                        ).join(), "1초 + 1초 연산");
+
+        printRunSpeed(() ->
+                CompletableFuture.supplyAsync(getRandomNumber)
+                        .thenCombine(CompletableFuture.supplyAsync(getRandomNumber),
+                                Integer::sum)
+                        .join(), "1초 * 1초 연산");
+
+        /*printRunSpeed(CompletableFuture.supplyAsync(getRandomNumber)
+                .thenCombine(CompletableFuture.supplyAsync(getRandomNumber), Integer::sum)
+                .orTimeout(500, TimeUnit.MILLISECONDS)::join, "500초 제한");*/
+
+        printRunSpeed(
+                CompletableFuture.supplyAsync(getRandomNumber)
+                        .thenCombine(CompletableFuture.supplyAsync(getRandomNumber), Integer::sum)
+                        .completeOnTimeout(0, 400, TimeUnit.MILLISECONDS)
+                        .thenApply(i -> {
+                            log.info("{}", i);
+                            return i;
+                        })::join,
+                "시간 초과시 기본값 제공"
+        );
+
+        Function<String, List<CompletableFuture<String>>> findPricesByCombineAsyncAndSyncAllOf = (product) -> shops.stream()
+                .map(shop -> CompletableFuture.supplyAsync(() -> shop.getPrice(product), executor))
+                .map(future -> future.thenApply(Quote::parse))
+                .map(future -> future.thenCompose(quote -> CompletableFuture.supplyAsync(
+                        () -> Discount.applyDiscount(quote), executor
+                )))
+                .collect(Collectors.toList());
+        printRunSpeed(() ->
+                        CompletableFuture.allOf(findPricesByCombineAsyncAndSyncAllOf.apply("myPhone")
+                                .stream()
+                                .map(future -> future.thenAccept(r -> log.info("{}", r)))
+                                .toArray(CompletableFuture[]::new))
+                , "테스트");
+
     }
 
     private static void printRunSpeed(Supplier<?> supplier, String message) {

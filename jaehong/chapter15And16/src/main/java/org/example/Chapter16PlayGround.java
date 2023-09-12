@@ -24,7 +24,12 @@ public class Chapter16PlayGround {
 
     public static void main(String... args) {
 
-        ExecutorService executorService = Executors.newCachedThreadPool();
+        ExecutorService executorService = Executors.newFixedThreadPool(Math.min(100, 5), r -> {
+            var thread = new Thread(r);
+            thread.setDaemon(true);
+            return thread;
+
+        });
         Future<Double> future = executorService.submit(Chapter16PlayGround::doLongCompetition);
         doSomethingElse();
 
